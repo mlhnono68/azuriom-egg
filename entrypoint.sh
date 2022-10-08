@@ -17,7 +17,7 @@ cat <<EOF > /etc/nginx/http.d/default.conf
 server {
     listen 80;
     #server_name example.com;
-    root /var/www/azuriom/public;
+    root /home/container/azuriom/public;
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";

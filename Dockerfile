@@ -8,10 +8,6 @@ RUN apk add nginx mariadb mariadb-common mariadb-client curl zip php81 php81-fpm
 RUN apk add php81-pdo php81-tokenizer php81-fileinfo php81-xmlwriter php81-ctype
 RUN apk add php81-session php81-pdo_mysql
 RUN apk add bash
-# RUN apk add openrc
-# RUN /etc/init.d/mariadb setup
-# RUN  mysql_install_db --user=mysql
-# RUN mysqld_safe
 
 # Create the container user for Pterodactly
 RUN adduser --disabled-password --home /home/container container
@@ -21,22 +17,23 @@ RUN mkdir /run/mysqld && chown container /run/mysqld
 RUN echo setup
 RUN mysql_install_db --user=container --datadir=/data
 
-# Download Azorium
-RUN curl -Lo /AzuriomInstaller.zip https://github.com/Azuriom/AzuriomInstaller/releases/download/v1.1.0/AzuriomInstaller.zip
-RUN mkdir -p /var/www/azuriom && cd /var/www/azuriom && unzip /AzuriomInstaller.zip && rm /AzuriomInstaller.zip && chmod -R 755 /var/www/azuriom
-RUN chown -R container:container /var/www/azuriom
+#RUN chown -R container:container /var/www/azuriom
 RUN chown -R container:container /etc/nginx
 RUN chown -R container:container /var/lib/nginx
 RUN chown -R container:container /var/log/nginx
 RUN chown -R container:container /run/nginx
 
 RUN chown -R container:container /var/log/php81
-#RUN mkdir -p /var/run/php && chown container:container /var/run/php
 
 # Switch to the container user
 USER container
 ENV  USER=container HOME=/home/container
 WORKDIR /home/container
+
+# Download Azorium
+RUN curl -Lo /home/container/AzuriomInstaller.zip https://github.com/Azuriom/AzuriomInstaller/releases/download/v1.1.0/AzuriomInstaller.zip
+RUN mkdir -p /home/container/azuriom && cd /home/container/azuriom && unzip /home/container/AzuriomInstaller.zip && rm /home/container/AzuriomInstaller.zip && chmod -R 755 /home/container/azuriom
+
 
 COPY entrypoint.sh /entrypoint.sh
 CMD ["/bin/sh", "/entrypoint.sh"]
