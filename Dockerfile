@@ -7,6 +7,7 @@ RUN apk update
 RUN apk add nginx mariadb mariadb-common mariadb-client curl zip php81 php81-fpm php81-pgsql php81-mysqli php81-sqlite3 php81-bcmath php81-mbstring php81-xml php81-curl php81-zip php81-gd
 RUN apk add php81-pdo php81-tokenizer php81-fileinfo php81-xmlwriter php81-ctype
 RUN apk add php81-session php81-pdo_mysql
+RUN apk add bash
 # RUN apk add openrc
 # RUN /etc/init.d/mariadb setup
 # RUN  mysql_install_db --user=mysql

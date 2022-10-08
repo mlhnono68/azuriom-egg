@@ -53,9 +53,5 @@ EOF
 # Start PHP fpm engine
 php-fpm81
 
-# Start nginx
-nginx
-
-/bin/sh
-
-# mysql -h 127.0.0.1 -u azuriom -p
+# Start nginx in foreground
+nginx -g 'daemon off;'
