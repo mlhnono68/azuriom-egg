@@ -1,0 +1,1 @@
+Docker image for future pterodactly egg to support Azorium
