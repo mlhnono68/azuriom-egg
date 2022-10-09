@@ -11,29 +11,27 @@ RUN apk add bash
 
 # Create the container user for Pterodactly
 RUN adduser --disabled-password --home /home/container container
-#RUN mkdir /run/mysqld && chown container /run/mysqld
 
 # Setup mysql with the container user
 RUN echo setup
 RUN mysql_install_db --user=container --datadir=/data
-#RUN sed -i'' 's/\/run\/mysqld/\/home\/container/' /etc/mysql/my.cnf
-RUN echo "socket = /home/container/mysqld.sock" >> /etc/my.cnf
+RUN echo "socket = /tmp/mysqld.sock" >> /etc/my.cnf
+RUN mkdir -p /tmp/log-php && chown container:container /tmp/log-php
+RUN rmdir /var/log/php81 && ln -s /tmp/log-php /var/log/php81
 
-#RUN chown -R container:container /var/www/azuriom
-RUN chown -R container:container /etc/nginx
-RUN chown -R container:container /var/lib/nginx
-RUN chown -R container:container /var/log/nginx
-RUN chown -R container:container /run/nginx
-
-# RUN chown -R container:container /var/log/php81
-RUN touch /home/container/php-error.log && chown container:container /home/container/php-error.log
-RUN ln -s /home/container/php-error.log /var/log/php81/error.log
-
-RUN mkdir -p /var/lib/nginx/tmp /var/log/nginx \
- #   && chown -R container:container /var/lib/nginx /var/log/nginx \
-    && chmod -R 755 /var/lib/nginx /var/log/nginx
-
+# Setup nginx config and do the symbolic links to allow running readonly
 COPY nginx.conf /home/container/nginx.conf
+RUN mkdir -p /tmp/lib-nginx && chown container:container /tmp/lib-nginx
+RUN mkdir -p /tmp/log-nginx && chown container:container /tmp/log-nginx
+RUN mkdir -p /tmp/run-nginx && chown container:container /tmp/run-nginx
+RUN chown -R container:container /var/lib/nginx
+RUN chown -R container:container /run/nginx
+RUN ln -s /tmp/lib-nginx /var/lib/nginx/tmp
+RUN ln -s /tmp/log-nginx /var/log/nginx
+RUN ln -s /tmp/run-nginx /run/nginx
+RUN chown -R container:container /var/log/nginx
+
+# Ensure container user owns everything in home directory
 RUN chown -R container:container /home/container
 
 # Switch to the container user
@@ -45,6 +43,6 @@ WORKDIR /home/container
 RUN curl -Lo /home/container/AzuriomInstaller.zip https://github.com/Azuriom/AzuriomInstaller/releases/download/v1.1.0/AzuriomInstaller.zip
 RUN mkdir -p /home/container/azuriom && cd /home/container/azuriom && unzip /home/container/AzuriomInstaller.zip && rm /home/container/AzuriomInstaller.zip && chmod -R 755 /home/container/azuriom
 
-
+# Define the entrypoint for Pterodactyl
 COPY entrypoint.sh /entrypoint.sh
 CMD ["/bin/sh", "/entrypoint.sh"]
