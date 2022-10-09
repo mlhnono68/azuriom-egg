@@ -11,11 +11,13 @@ RUN apk add bash
 
 # Create the container user for Pterodactly
 RUN adduser --disabled-password --home /home/container container
-RUN mkdir /run/mysqld && chown container /run/mysqld
+#RUN mkdir /run/mysqld && chown container /run/mysqld
 
 # Setup mysql with the container user
 RUN echo setup
 RUN mysql_install_db --user=container --datadir=/data
+#RUN sed -i'' 's/\/run\/mysqld/\/home\/container/' /etc/mysql/my.cnf
+RUN echo "socket = /home/container/mysqld.sock" >> /etc/my.cnf
 
 #RUN chown -R container:container /var/www/azuriom
 RUN chown -R container:container /etc/nginx
@@ -23,7 +25,16 @@ RUN chown -R container:container /var/lib/nginx
 RUN chown -R container:container /var/log/nginx
 RUN chown -R container:container /run/nginx
 
-RUN chown -R container:container /var/log/php81
+# RUN chown -R container:container /var/log/php81
+RUN touch /home/container/php-error.log && chown container:container /home/container/php-error.log
+RUN ln -s /home/container/php-error.log /var/log/php81/error.log
+
+RUN mkdir -p /var/lib/nginx/tmp /var/log/nginx \
+ #   && chown -R container:container /var/lib/nginx /var/log/nginx \
+    && chmod -R 755 /var/lib/nginx /var/log/nginx
+
+COPY nginx.conf /home/container/nginx.conf
+RUN chown -R container:container /home/container
 
 # Switch to the container user
 USER container
