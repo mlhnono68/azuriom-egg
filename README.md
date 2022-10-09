@@ -8,4 +8,6 @@ docker tag azorium-egg ghcr.io/mlhnono68/azorium-egg:0.0.1
 docker push ghcr.io/mlhnono68/azorium-egg:0.0.1
 
 docker pull ghcr.io/mlhnono68/azorium-egg:0.0.1
+
+sudo rm -rf /Users/auberta2/Downloads/container/* && docker build -t azorium-egg . && docker run -p 80:80 -p3306:3306 --read-only -v /Users/auberta2/Downloads/container:/home/container -it azorium-egg
 ```
