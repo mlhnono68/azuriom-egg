@@ -1,6 +1,15 @@
 name: Build Azuriom egg docker image
 run-name: ${{ github.actor }} is building azorium-egg Docker image
-on: [push]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'master'
 jobs:
   Docker-Build:
     runs-on: ubuntu-latest
