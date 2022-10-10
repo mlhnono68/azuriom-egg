@@ -7,7 +7,7 @@
     "exported_at": "2022-10-10T06:53:04+01:00",
     "name": "Azorium",
     "author": "aaubert@magesi.com",
-    "description": null,
+    "description": "Azorium is a game oriented CMS.",
     "features": null,
     "docker_images": {
         "ghcr.io\/mlhnono68\/azorium-egg:0.0.1": "ghcr.io\/mlhnono68\/azorium-egg:0.0.1"
@@ -22,9 +22,9 @@
     },
     "scripts": {
         "installation": {
-            "script": null,
+            "script": "#!\/bin\/sh\r\necho \"Installation will be handled in container startup...\"\r\nexit 0",
             "container": "alpine:3.4",
-            "entrypoint": "ash"
+            "entrypoint": "sh"
         }
     },
     "variables": [
