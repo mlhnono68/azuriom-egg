@@ -31,7 +31,7 @@ jobs:
         run: |
           env
           mkdir -p build
-          cat egg-azorium.json | jq '.docker_images = {"ghcr.io\/mlhnono68\/azorium-egg:'$DOCKER_TAG'": "ghcr.io\/mlhnono68\/azorium-egg:'$DOCKER_TAG'"}' > build/egg-azorium.json
+          cat egg-azorium.json | jq '.docker_images = {"'$DOCKER_TAG'": "'$DOCKER_TAG'"}' > build/egg-azorium.json
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
