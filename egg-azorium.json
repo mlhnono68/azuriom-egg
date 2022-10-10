@@ -10,7 +10,9 @@
     "description": "Azorium is a game oriented CMS.",
     "features": null,
     "docker_images": {
-        "ghcr.io\/mlhnono68\/azorium-egg:0.0.1": "ghcr.io\/mlhnono68\/azorium-egg:0.0.1"
+        "ghcr.io\/mlhnono68\/azorium-egg:0.0.1": "ghcr.io\/mlhnono68\/azorium-egg:0.0.1",
+        "ghcr.io\/mlhnono68\/azorium-egg:main": "ghcr.io\/mlhnono68\/azorium-egg:main",
+        "ghcr.io\/mlhnono68\/azorium-egg:latest": "ghcr.io\/mlhnono68\/azorium-egg:latest"
     },
     "file_denylist": [],
     "startup": "\/entrypoint.sh",
