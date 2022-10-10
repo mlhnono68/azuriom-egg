@@ -26,6 +26,7 @@ RUN ln -s /home/container/lib-nginx /var/lib/nginx/tmp
 RUN ln -s /home/container/log-nginx /var/log/nginx
 RUN ln -s /home/container/run-nginx /run/nginx
 RUN chown -R container:container /var/log/nginx
+RUN sed -i'' 's/.* = nobody//' /etc/php81/php-fpm.d/www.conf
 
 # Ensure container user owns everything in home directory
 RUN chown -R container:container /home/container
