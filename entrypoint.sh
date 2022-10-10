@@ -43,8 +43,8 @@ php-fpm81 -F -O &
 cp /etc/nginx/nginx.conf /home/container/nginx.conf
 if [ ! -z "$SERVER_PORT" ]
 then
-    echo Listening to $SERVER_PORT
-    sed -i'' "s/listen .*;/listen $SERVER_PORT;/" /home/container/nginx.conf
+    echo Listening to $SERVER_IP:$SERVER_PORT
+    sed -i'' "s/listen .*;/listen $SERVER_IP:$SERVER_PORT;/" /home/container/nginx.conf
     cat /home/container/nginx.conf | grep listen
 fi
 
