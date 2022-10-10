@@ -25,6 +25,16 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/mlhnono68/azorium-egg
+      - name: Build an egg pre-configured that docker image
+        run: |
+          mkdir -p build
+          cat egg-azorium.json | jq '.docker_images = {"ghcr.io\/mlhnono68\/azorium-egg:0.0.1": "ghcr.io\/mlhnono68\/azorium-egg:0.0.1"}' > build/egg-azorium.json
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: egg-azorium
+          path: |
+            build/egg-azorium.json
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
