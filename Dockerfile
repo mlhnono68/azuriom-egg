@@ -10,30 +10,34 @@ RUN apk add php81-session php81-pdo_mysql
 RUN apk add bash
 
 # Create the container user for Pterodactly
-RUN adduser --disabled-password --home /home/container container
-RUN mkdir /run/mysqld && chown container /run/mysqld
+RUN adduser -u 998 --disabled-password --home /home/container container
 
 # Setup mysql with the container user
-RUN echo setup
-RUN mysql_install_db --user=container --datadir=/data
+COPY my.cnf /etc/my.cnf
+RUN rmdir /var/log/php81 && ln -s /home/container/log-php /var/log/php81
 
-#RUN chown -R container:container /var/www/azuriom
-RUN chown -R container:container /etc/nginx
+RUN chown -R container:container /usr/lib/mariadb/plugin/auth_pam_tool_dir
+
+# Setup nginx config and do the symbolic links to allow running readonly
+COPY nginx.conf /etc/nginx/nginx.conf
 RUN chown -R container:container /var/lib/nginx
-RUN chown -R container:container /var/log/nginx
 RUN chown -R container:container /run/nginx
+RUN ln -s /home/container/lib-nginx /var/lib/nginx/tmp
+RUN ln -s /home/container/log-nginx /var/log/nginx
+RUN ln -s /home/container/run-nginx /run/nginx
+RUN chown -R container:container /var/log/nginx
 
-RUN chown -R container:container /var/log/php81
+# Ensure container user owns everything in home directory
+RUN chown -R container:container /home/container
+
+# Download Azorium
+RUN curl -Lo /AzuriomInstaller.zip https://github.com/Azuriom/AzuriomInstaller/releases/download/v1.1.0/AzuriomInstaller.zip
 
 # Switch to the container user
 USER container
 ENV  USER=container HOME=/home/container
 WORKDIR /home/container
 
-# Download Azorium
-RUN curl -Lo /home/container/AzuriomInstaller.zip https://github.com/Azuriom/AzuriomInstaller/releases/download/v1.1.0/AzuriomInstaller.zip
-RUN mkdir -p /home/container/azuriom && cd /home/container/azuriom && unzip /home/container/AzuriomInstaller.zip && rm /home/container/AzuriomInstaller.zip && chmod -R 755 /home/container/azuriom
-
-
+# Define the entrypoint for Pterodactyl
 COPY entrypoint.sh /entrypoint.sh
 CMD ["/bin/sh", "/entrypoint.sh"]

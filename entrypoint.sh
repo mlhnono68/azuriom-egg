@@ -1,57 +1,52 @@
 #!/bin/sh
 
-/usr/bin/mysqld_safe --datadir='/data' --port=3306 --skip_networking=OFF &
+mkdir -p /home/container/lib-nginx
+mkdir -p /home/container/log-nginx
+mkdir -p /home/container/run-nginx
+mkdir -p /home/container/log-php
+
+mkdir -p /home/container/tmp
+TMPDIR=/home/container/tmp
+
+if [ ! -d /home/container/mysql ]
+then
+    mkdir -p /home/container/mysql/data
+    mysql_install_db --tmpdir=/home/container/tmp --datadir=/home/container/mysql/data
+
+fi
+#echo "socket=/home/container/mysqld.sock" >> /etc/my.cnf
+
+/usr/bin/mysqld_safe --datadir='/home/container/mysql/data' --port=3306 --skip_networking=OFF --tmpdir=/home/container/tmp &
 
 sleep 2
 
+# Unzip Azuriom
+if [ ! -d /home/container/azuriom ]
+then
+    mkdir -p /home/container/azuriom
+    ( cd /home/container/azuriom && unzip /AzuriomInstaller.zip && chmod -R 755 /home/container/azuriom )
+fi
+
 # Setup the Azorium database
-cat <<EOF | mysql
+cat <<EOF | mysql -S /home/container/mysqld.sock
 CREATE USER 'azuriom'@'127.0.0.1' IDENTIFIED BY 'password';
 CREATE DATABASE azuriom;
 GRANT ALL PRIVILEGES ON azuriom.* TO 'azuriom'@'127.0.0.1' WITH GRANT OPTION;
 EOF
 
-# Setup nginx configuration
-echo "Configuring NGINX"
-cat <<EOF > /etc/nginx/http.d/default.conf
-server {
-    listen 80;
-    #server_name example.com;
-    root /home/container/azuriom/public;
-
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
-    add_header X-Content-Type-Options "nosniff";
-    add_header Referrer-Policy "strict-origin-when-cross-origin";
-
-    index index.html index.htm index.php;
-
-    charset utf-8;
-
-    location / {
-        try_files \$uri \$uri/ /index.php?\$query_string;
-    }
-
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
-
-    error_page 404 /index.php;
-
-    location ~ \.php$ {
-        fastcgi_pass 127.0.0.1:9000;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
-        include fastcgi_params;
-    }
-
-    location ~ /\.(?!well-known).* {
-        deny all;
-    }
-}
-EOF
-
 # Start PHP fpm engine
-php-fpm81
+set
+php-fpm81 -F -O &
 
 # Start nginx in foreground
-nginx -g 'daemon off;'
+# bash
+cp /etc/nginx/nginx.conf /home/container/nginx.conf
+if [ ! -z "$SERVER_PORT" ]
+then
+    echo Listening to $SERVER_IP:$SERVER_PORT
+    sed -i'' "s/listen .*;/listen $SERVER_IP:$SERVER_PORT;/" /home/container/nginx.conf
+    cat /home/container/nginx.conf | grep listen
+fi
+
+nginx -g 'daemon off;' -c /home/container/nginx.conf -e /home/container/log-nginx/nginx-error.log &
+bash
