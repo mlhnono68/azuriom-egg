@@ -11,8 +11,7 @@
     "features": null,
     "docker_images": {
         "ghcr.io\/mlhnono68\/azorium-egg:0.0.1": "ghcr.io\/mlhnono68\/azorium-egg:0.0.1",
-        "ghcr.io\/mlhnono68\/azorium-egg:main": "ghcr.io\/mlhnono68\/azorium-egg:main",
-        "ghcr.io\/mlhnono68\/azorium-egg:latest": "ghcr.io\/mlhnono68\/azorium-egg:latest"
+        "ghcr.io\/mlhnono68\/azorium-egg:main": "ghcr.io\/mlhnono68\/azorium-egg:main"
     },
     "file_denylist": [],
     "startup": "\/entrypoint.sh",
@@ -37,7 +36,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:20",
+            "rules": "string|max:20",
             "field_type": "text"
         }
     ]
