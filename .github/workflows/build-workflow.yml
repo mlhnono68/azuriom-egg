@@ -26,9 +26,11 @@ jobs:
         with:
           images: ghcr.io/mlhnono68/azorium-egg
       - name: Build an egg pre-configured that docker image
+        env:
+          DOCKER_TAG: ${{ steps.meta.outputs.tags[0] }}
         run: |
           mkdir -p build
-          cat egg-azorium.json | jq '.docker_images = {"ghcr.io\/mlhnono68\/azorium-egg:0.0.1": "ghcr.io\/mlhnono68\/azorium-egg:0.0.1"}' > build/egg-azorium.json
+          cat egg-azorium.json | jq '.docker_images = {"ghcr.io\/mlhnono68\/azorium-egg:$DOCKER_TAG": "ghcr.io\/mlhnono68\/azorium-egg:$DOCKER_TAG"}' > build/egg-azorium.json
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
