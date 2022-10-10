@@ -7,7 +7,10 @@ docker build -t azorium-egg .
 
 # How to build and run locally ?
 ```shell
-sudo rm -rf ./container && mkdir -p ./container && docker build -t azorium-egg . && docker run -p 2000:2000 --env SERVER_IP=0.0.0.0 --env SERVER_PORT=2000 --env EMBEDDED_MYSQL_PASSWORD=password --read-only -v $PWD/container:/home/container -it azorium-egg
+sudo rm -rf ./container && \
+    mkdir -p ./container && \
+    docker build -t azorium-egg . && \
+    docker run -p 2000:2000 --env SERVER_IP=0.0.0.0 --env SERVER_PORT=2000 --env EMBEDDED_MYSQL_PASSWORD=password --read-only -v $PWD/container:/home/container -it azorium-egg
 ```
 
 # How to install and use the egg ?
