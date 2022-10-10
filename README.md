@@ -1,4 +1,4 @@
-Docker image for future pterodactly egg to support Azorium
+Pterodactyl egg and docker image for future pterodactly egg to support Azorium
 
 # How to build ?
 ```shell
@@ -14,7 +14,7 @@ docker push ghcr.io/mlhnono68/azorium-egg:0.0.1
 
 # How to build and run locally ?
 ```shell
-sudo rm -rf $HOME/Downloads/container/* && docker build -t azorium-egg . && docker run -p 2000:2000 --env SERVER_IP=0.0.0.0 --env SERVER_PORT=2000 --env EMBEDDED_MYSQL_PASSWORD=password --read-only -v $HOME/Downloads/container:/home/container -it azorium-egg
+sudo rm -rf ./container && mkdir -p ./container && docker build -t azorium-egg . && docker run -p 2000:2000 --env SERVER_IP=0.0.0.0 --env SERVER_PORT=2000 --env EMBEDDED_MYSQL_PASSWORD=password --read-only -v $PWD/container:/home/container -it azorium-egg
 ```
 
 # How to install and use the egg ?
