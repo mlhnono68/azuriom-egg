@@ -8,34 +8,39 @@ mkdir -p /home/container/log-php
 mkdir -p /home/container/tmp
 TMPDIR=/home/container/tmp
 
-if [ ! -d /home/container/mysql ]
+# Show env. variables for debug reasons
+set
+
+# Only start mysql if EMBEDDED_MYSQL_PASSWORD is defined
+if [ ! -z "$EMBEDDED_MYSQL_PASSWORD" ]
 then
-    mkdir -p /home/container/mysql/data
-    mysql_install_db --tmpdir=/home/container/tmp --datadir=/home/container/mysql/data
+    # Only initialize the system database if not already done
+    if [ ! -d /home/container/mysql ]
+    then
+        mkdir -p /home/container/mysql/data
+        mysql_install_db --tmpdir=/home/container/tmp --datadir=/home/container/mysql/data
+    fi
 
+    # Start mysqld in the background
+    /usr/bin/mysqld_safe --datadir='/home/container/mysql/data' --port=3306 --skip_networking=OFF --tmpdir=/home/container/tmp &
+    sleep 2
+
+    # Setup the Azorium database
+    cat <<EOF | mysql -S /home/container/mysqld.sock
+    CREATE USER 'azuriom'@'127.0.0.1' IDENTIFIED BY '$EMBEDDED_MYSQL_PASSWORD';
+    CREATE DATABASE azuriom;
+    GRANT ALL PRIVILEGES ON azuriom.* TO 'azuriom'@'127.0.0.1' WITH GRANT OPTION;
+EOF
 fi
-#echo "socket=/home/container/mysqld.sock" >> /etc/my.cnf
 
-/usr/bin/mysqld_safe --datadir='/home/container/mysql/data' --port=3306 --skip_networking=OFF --tmpdir=/home/container/tmp &
-
-sleep 2
-
-# Unzip Azuriom
+# Unzip Azuriom if not already done
 if [ ! -d /home/container/azuriom ]
 then
     mkdir -p /home/container/azuriom
     ( cd /home/container/azuriom && unzip /AzuriomInstaller.zip && chmod -R 755 /home/container/azuriom )
 fi
 
-# Setup the Azorium database
-cat <<EOF | mysql -S /home/container/mysqld.sock
-CREATE USER 'azuriom'@'127.0.0.1' IDENTIFIED BY 'password';
-CREATE DATABASE azuriom;
-GRANT ALL PRIVILEGES ON azuriom.* TO 'azuriom'@'127.0.0.1' WITH GRANT OPTION;
-EOF
-
 # Start PHP fpm engine
-set
 php-fpm81 -F -O &
 
 # Start nginx in foreground
@@ -48,5 +53,6 @@ then
     cat /home/container/nginx.conf | grep listen
 fi
 
+# Start nginx in the foreground
 nginx -g 'daemon off;' -c /home/container/nginx.conf -e /home/container/log-nginx/nginx-error.log &
 bash
