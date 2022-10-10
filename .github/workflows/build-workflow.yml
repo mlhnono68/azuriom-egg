@@ -1,0 +1,22 @@
+name: Build Azuriom egg docker image
+run-name: ${{ github.actor }} is building azorium-egg Docker image
+on: [push]
+jobs:
+  Docker-Build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building branch ${{ github.ref }} for ${{ github.repository }} triggered by a ${{ github.event_name }}."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: |
+            mlhnono68/azorium-egg:latest
+            mlhnono68/azorium-egg:1.0.0
+          # ghcr.io/mlhnono68/azorium-egg:latest
+          # ghcr.io/mlhnono68/azorium-egg:0.0.1
