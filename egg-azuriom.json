@@ -5,13 +5,13 @@
         "update_url": null
     },
     "exported_at": "2022-10-10T06:53:04+01:00",
-    "name": "Azorium",
+    "name": "Azuriom",
     "author": "aaubert@magesi.com",
-    "description": "Azorium is a game oriented CMS.",
+    "description": "Azuriom is a game oriented CMS.",
     "features": null,
     "docker_images": {
-        "ghcr.io\/mlhnono68\/azorium-egg:0.0.1": "ghcr.io\/mlhnono68\/azorium-egg:0.0.1",
-        "ghcr.io\/mlhnono68\/azorium-egg:main": "ghcr.io\/mlhnono68\/azorium-egg:main"
+        "ghcr.io\/mlhnono68\/azuriom-egg:0.0.2": "ghcr.io\/mlhnono68\/azuriom-egg:0.0.2",
+        "ghcr.io\/mlhnono68\/azuriom-egg:main": "ghcr.io\/mlhnono68\/azuriom-egg:main"
     },
     "file_denylist": [],
     "startup": "\/entrypoint.sh",
@@ -31,7 +31,7 @@
     "variables": [
         {
             "name": "Embedded mySQL password",
-            "description": "Define a password assuming you want to embed a dedicated mySQL server on 127.0.0.1:3006 for Azorium and user azorium",
+            "description": "Define a password assuming you want to embed a dedicated mySQL server on 127.0.0.1:3006 for Azuriom and user azuriom",
             "env_variable": "EMBEDDED_MYSQL_PASSWORD",
             "default_value": "",
             "user_viewable": true,
