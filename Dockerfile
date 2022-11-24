@@ -28,7 +28,7 @@ RUN chown -R container:container /var/lib/nginx && \
 # Ensure container user owns everything in home directory
 RUN chown -R container:container /home/container
 
-# Download Azorium
+# Download Azuriom
 RUN curl -Lo /AzuriomInstaller.zip https://github.com/Azuriom/AzuriomInstaller/releases/download/v1.1.0/AzuriomInstaller.zip
 
 # Switch to the container user
