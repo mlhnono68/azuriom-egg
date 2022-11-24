@@ -32,6 +32,8 @@ then
     GRANT ALL PRIVILEGES ON azuriom.* TO 'azuriom'@'127.0.0.1' WITH GRANT OPTION;
     ALTER USER 'azuriom'@'127.0.0.1' IDENTIFIED BY '$EMBEDDED_MYSQL_PASSWORD';
 EOF
+else
+    echo "INFO: No embedded MariaDB database because no EMBEDDED_MYSQL_PASSWORD has been set"
 fi
 
 # Unzip Azuriom if not already done
