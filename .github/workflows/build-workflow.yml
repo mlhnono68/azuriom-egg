@@ -29,13 +29,13 @@ jobs:
         env:
           DOCKER_TAG: ${{ steps.meta.outputs.tags }}
         run: |
-          env
+          echo $DOCKER_TAG
           mkdir -p build
           cat egg-azuriom.json | jq '.docker_images = {}' > build/egg-azuriom.json 
-          for UNIQUE_TAG in "$DOCKER_TAG"; do
+          echo "$DOCKER_TAG" | while IFS= read -r UNIQUE_TAG ; do
+            echo "Adding tag $UNIQUE_TAG"
             cat <<< $(jq '.docker_images += {"'$UNIQUE_TAG'": "'$UNIQUE_TAG'"}' build/egg-azuriom.json ) > build/egg-azuriom.json
           done
-          cat egg-azuriom.json | jq '.docker_images = {"'$DOCKER_TAG'": "'$DOCKER_TAG'"}' > build/egg-azuriom.json
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
