@@ -60,6 +60,10 @@ jobs:
     needs: Docker-Build
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@master
+        with:
+          name: egg-azuriom
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
