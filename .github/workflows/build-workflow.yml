@@ -74,7 +74,7 @@ jobs:
   Publish-PreRelease:
     runs-on: ubuntu-latest
     needs: Docker-Build
-    if: github.ref == 'refs/tags/master'
+    if: github.ref == 'refs/tags/main'
     steps:
       - uses: actions/checkout@master
       - uses: actions/download-artifact@master
